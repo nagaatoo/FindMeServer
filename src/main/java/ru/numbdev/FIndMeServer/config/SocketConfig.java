@@ -1,23 +1,20 @@
 package ru.numbdev.FIndMeServer.config;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.messaging.simp.config.MessageBrokerRegistry;
-import org.springframework.web.socket.config.annotation.EnableWebSocketMessageBroker;
-import org.springframework.web.socket.config.annotation.StompEndpointRegistry;
-import org.springframework.web.socket.config.annotation.WebSocketMessageBrokerConfigurer;
+import org.springframework.web.socket.config.annotation.*;
+import ru.numbdev.FIndMeServer.handler.WebSocketHandler;
 
-@EnableWebSocketMessageBroker
+@EnableWebSocket
 @Configuration
-public class SocketConfig implements WebSocketMessageBrokerConfigurer {
+public class SocketConfig implements WebSocketConfigurer {
+
+    @Autowired
+    private WebSocketHandler webSocketHandler;
 
     @Override
-    public void registerStompEndpoints(StompEndpointRegistry registry) {
-        registry.addEndpoint("/radar").setAllowedOrigins("*");
-        registry.addEndpoint("/radarJs").setAllowedOrigins("*").withSockJS();
-    }
-
-    @Override
-    public void configureMessageBroker(MessageBrokerRegistry registry) {
-        registry.setApplicationDestinationPrefixes("/get");
+    public void registerWebSocketHandlers(WebSocketHandlerRegistry webSocketHandlerRegistry) {
+        webSocketHandlerRegistry.addHandler(webSocketHandler, "/radar");
     }
 }
+
